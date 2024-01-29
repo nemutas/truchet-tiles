@@ -11,10 +11,7 @@ export abstract class Three {
   private _controls?: OrbitControls
   readonly time = { delta: 0, elapsed: 0 }
 
-  constructor(
-    canvas: HTMLCanvasElement,
-    public readonly glslVersion: THREE.GLSLVersion = '100',
-  ) {
+  constructor(canvas: HTMLCanvasElement) {
     this.renderer = this.createRenderer(canvas)
     this.camera = this.createCamera()
     this.scene = this.createScene()
@@ -27,7 +24,6 @@ export abstract class Three {
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setPixelRatio(window.devicePixelRatio)
-    renderer.domElement.setAttribute('glslVersion', this.glslVersion)
     return renderer
   }
 
@@ -78,17 +74,6 @@ export abstract class Three {
     const screenAspect = this.size.aspect
     if (screenAspect < imageAspect) return [screenAspect / imageAspect, 1]
     else return [1, imageAspect / screenAspect]
-  }
-
-  protected preprocess(material: THREE.RawShaderMaterial) {
-    if (material.glslVersion === '300 es' || this.glslVersion === '300 es') {
-      material.vertexShader = material.vertexShader.replace('#version 300 es', '')
-      material.fragmentShader = material.fragmentShader.replace('#version 300 es', '')
-    }
-    if (!material.glslVersion && this.glslVersion === '300 es') {
-      material.glslVersion = '300 es'
-    }
-    return material
   }
 
   protected render() {

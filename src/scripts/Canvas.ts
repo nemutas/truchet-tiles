@@ -3,13 +3,14 @@ import { Three } from './core/Three'
 import vertexShader from './shader/quad.vs'
 import fragmentShader from './shader/output.fs'
 import { Main } from './scene/Main'
+import { RawShaderMaterial } from './core/ExtendedMaterials'
 
 export class Canvas extends Three {
   private main: Main
   private output: THREE.Mesh<THREE.PlaneGeometry, THREE.RawShaderMaterial, THREE.Object3DEventMap>
 
   constructor(canvas: HTMLCanvasElement) {
-    super(canvas, '300 es')
+    super(canvas)
     this.main = new Main(this)
     this.output = this.createOutput()
 
@@ -19,15 +20,14 @@ export class Canvas extends Three {
 
   private createOutput() {
     const geometry = new THREE.PlaneGeometry(2, 2)
-    const material = this.preprocess(
-      new THREE.RawShaderMaterial({
-        uniforms: {
-          tSource: { value: null },
-        },
-        vertexShader,
-        fragmentShader,
-      }),
-    )
+    const material = new RawShaderMaterial({
+      uniforms: {
+        tSource: { value: null },
+      },
+      vertexShader,
+      fragmentShader,
+      glslVersion: '300 es',
+    })
     const mesh = new THREE.Mesh(geometry, material)
     this.scene.add(mesh)
     return mesh

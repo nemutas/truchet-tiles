@@ -1,12 +1,12 @@
-import * as THREE from 'three'
 import { Canvas } from '../Canvas'
 import { BackBuffer } from '../core/BackBuffer'
+import { RawShaderMaterial } from '../core/ExtendedMaterials'
 import fragmentShader from '../shader/main.fs'
 import vertexShader from '../shader/quad.vs'
 
 export class Main extends BackBuffer {
   constructor(private canvas: Canvas) {
-    const material = new THREE.RawShaderMaterial({
+    const material = new RawShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
         uResolution: { value: [canvas.size.width, canvas.size.height] },
@@ -14,6 +14,7 @@ export class Main extends BackBuffer {
       },
       vertexShader,
       fragmentShader,
+      glslVersion: '300 es',
     })
 
     super(canvas.renderer, material)
